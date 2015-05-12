@@ -23,7 +23,7 @@ public class Emission implements Runnable{
 			System.out.print("");//meintient le thread activé
 			if(time != c.getTime()){
 				while(time < c.getTime()){
-					sayP(c.getLog()[time]);
+					sayP(c.getLog().get(time));
 					time++;
 				}
 				if(time > c.getTime())time = c.getTime();

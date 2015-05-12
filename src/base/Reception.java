@@ -3,6 +3,8 @@ package base;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Reception implements Runnable{
 
@@ -42,7 +44,7 @@ public class Reception implements Runnable{
 								if(msg.contains("http://")){
 									String lnk = msg.split("http://")[1].split(" ")[0];
 									String[] dec = lnk.split("\\.");
-									if(Util.find(Chat.IMG,dec[dec.length-1])!=null){
+									if(Util.find(Chat.IMG,dec[dec.length-1])){
 										msg2 = msg2.replace("http://"+lnk,Html.lien(lnk,"image"));
 									}else{
 										msg2 = msg2.replace("http://"+lnk,Html.lien(lnk,"lien"));
@@ -51,7 +53,7 @@ public class Reception implements Runnable{
 								}else{
 									String lnk = msg.split("https://")[1].split(" ")[0];
 									String[] dec = lnk.split("\\.");
-									if(Util.find(Chat.IMG,dec[dec.length-1])!=null){
+									if(Util.find(Chat.IMG,dec[dec.length-1])){
 										msg2 = msg2.replace("https://"+lnk,Html.lien(lnk,"image"));
 									}else{
 										msg2 = msg2.replace("https://"+lnk,Html.lien(lnk,"lien"));
@@ -211,8 +213,8 @@ public class Reception implements Runnable{
 
 	private void list() {
 		sayP(Html.info1("Liste de connectés :"));
-		for(int k = 0; k < c.getClients().length; k++){
-			sayP(Html.info1(c.getClients()[k].getAdminMark()+c.getClients()[k].getPseudo()));
+		for(Client c1:c.getClients().values()){
+			sayP(Html.info1(c1.getAdminMark()+c1.getPseudo()));
 		}
 	}
 
@@ -249,18 +251,19 @@ public class Reception implements Runnable{
 
 	private void help(String[] par) {
 		if(par.length==1){
-			String[] comm = {"/disconnect,/dis)","/help","/ip",
+			ArrayList<String> comm = new ArrayList<String>(Arrays.asList("/disconnect,/dis)","/help","/ip",
 					"/list","/me","/pseudo,nick","/couleur,/col)",
 					"/gras,/g)","/barre,/b)","/italique,/i)",
-					"/souligne,/s)"};
-			String[] commAdm = {"/kick,/eject","/ban","/deban",
-					"/mute","/admin,/adm"};
+					"/souligne,/s)"));
+			ArrayList<String> commAdm = new ArrayList<String>(Arrays.asList("/kick,/eject","/ban","/deban",
+					"/mute","/admin,/adm"));
 			if(cl.isAdmin()){
-				comm = Util.sortA(Util.extend(comm,commAdm));
+				comm.addAll(commAdm);
 			}
-			String[] text = Util.extend(new String[]{"Liste des commandes :"},comm);
-			for(int k = 0; k < text.length; k++){
-				sayP(Html.info1(text[k]));
+			ArrayList<String> text = new ArrayList<String>(Arrays.asList("Liste des commandes :"));
+			text.addAll(comm);
+			for(String s:text){
+				sayP(Html.info1(s));
 			}
 		}else{
 			switch(par[1]){
